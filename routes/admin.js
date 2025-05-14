@@ -14,15 +14,15 @@ adminRouter.post("/signin",function(req,res){
 adminRouter.use(adminMiddleware);
 */
 
-adminRouter.post("/course",function(req,res){
+adminRouter.post("/",function(req,res){
 
 });
 
-adminRouter.put("/course",function(req,res){
+adminRouter.put("/",function(req,res){
 
 });
 
-adminRouter.get("/course/bul",function(req,res){
+adminRouter.get("/bulk",function(req,res){
 
 });
 

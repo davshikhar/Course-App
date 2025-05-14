@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
-mongoose.connect("mongodb+srv://admin:Mongodb123@cluster0.xuubqyp.mongodb.net/course-app");
+require('dotenv').config();
+const mongoUri = process.env.MONGO_URI;
+mongoose.connect(mongoUri);
 
 const userSchema = new Schema({
     email:{type:String, unique:true},

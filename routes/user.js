@@ -8,19 +8,84 @@ const Router = express.Router;
 
 const { Router } = require('express');//here we just get the Router by destructuring and getting only the "Router" and not the entire express
 const userRouter = Router();
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { userModel } = require('../db');
+const secret = "12345shikhar";
 
-userRouter.post("/signup",function(req,res){
+userRouter.post("/signup",async function(req,res){
+
+    const email = req.body.email;
+    const password = req.body.password;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+
+    const hashedPassword = await bcrypt.hash(password,3);
+    
+    await userModel.create({
+        email:email,
+        password:hashedPassword,
+        firstName:firstName,
+        lastName:lastName
+    });
+
+    res.json({
+        message:"You are signed up"
+    })
+});
+
+userRouter.post("/signin",async function(req,res){
+    const email = req.body.email;
+    const password = req.body.password;
+
+    const response = await userModel.findOne({
+        email:email
+    });
+
+    console.log(response.password);
+
+    if(!response){
+        res.status(403).json({
+            message:"User does not exist"
+        });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, response.password);
+
+    if(passwordMatch){
+        const token = jwt.sign({
+            id:response._id.toString()
+        },secret);
+        res.json({
+            token:token
+        });
+        return;
+    }
+    else{
+        res.status(403).json({
+            message:"Incorrect credentials"
+        });
+    }
+});
+
+userRouter.get("/purchases",auth,function(req,res){
 
 });
 
-userRouter.post("/signin",function(req,res){
+function auth(req,res,next){
+    const token = req.headers.token;
 
-});
-
-userRouter.get("/purchases",function(req,res){
-
-});
+    const decodedata = jwt.verify(token,secret);
+    if(decodedata){
+        req.userId = decodedata.id;
+        next();
+    }
+    else{
+        res.json({
+            message:"incorrect credentials"
+        });
+    }
+}
 
 module.exports = {
     userRouter : userRouter
