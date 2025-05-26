@@ -15,6 +15,11 @@ const secret = "12345shikhar";
 
 userRouter.post("/signup",async function(req,res){
 
+    /*we can also do this
+    const {email, password, firstName, lastName} = req.body;
+    this is called as destructuring.
+    */
+
     const email = req.body.email;
     const password = req.body.password;
     const firstName = req.body.firstName;
@@ -22,6 +27,7 @@ userRouter.post("/signup",async function(req,res){
 
     const hashedPassword = await bcrypt.hash(password,3);
     
+    //put the userModel.create in a try catch block
     await userModel.create({
         email:email,
         password:hashedPassword,
@@ -50,6 +56,7 @@ userRouter.post("/signin",async function(req,res){
         });
     }
 
+    //You can also do cookie based login in this part 
     const passwordMatch = await bcrypt.compare(password, response.password);
 
     if(passwordMatch){
