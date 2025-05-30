@@ -1,10 +1,11 @@
 const {Router} = require('express');
 const adminRouter = Router();
 const bcrypt = require('bcrypt');
-const { adminModel } = require('../db');
+const { adminModel, courseModel } = require('../db');
 const jwt = require('jsonwebtoken');
 
-const admin_secret = "admin1234";//this is different than that of the user's secret password that is used for signing jwt
+const {admin_secret}=require('../config');//this is different than that of the user's secret password that is used for signing jwt
+const { adminMiddleware } = require('../middleware/admin');
 
 adminRouter.post("/signup",async function(req,res){
     const {email,password,firstName,lastName} = req.body;
@@ -58,11 +59,27 @@ adminRouter.post("/signin",async function(req,res){
 adminRouter.use(adminMiddleware);
 */
 
-adminRouter.post("/",function(req,res){
+adminRouter.post("/course",adminMiddleware,async function(req,res){
+    const adminId = req.adminId;
+
+    const {title,description,price,imageUrl} = req.body;
+
+    const course = await courseModel.create({
+        title:title,
+        description:description,
+        price:price,
+        imageUrl:imageUrl,
+        creatorId:adminId
+    });
+
+    res.json({
+        message:"Course created successfully",
+        courseId:course._id
+    });
 
 });
 
-adminRouter.put("/",function(req,res){
+adminRouter.put("/course",function(req,res){
 
 });
 

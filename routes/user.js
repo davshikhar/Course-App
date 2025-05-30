@@ -11,7 +11,7 @@ const userRouter = Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { userModel } = require('../db');
-const user_secret = "12345shikhar";
+const {user_secret} = require('../config');
 
 userRouter.post("/signup",async function(req,res){
 
