@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { userModel } = require('../db');
 const {user_secret} = require('../config');
+const { userMiddleware } = require('../middleware/user');
 
 userRouter.post("/signup",async function(req,res){
 
@@ -75,10 +76,12 @@ userRouter.post("/signin",async function(req,res){
     }
 });
 
-userRouter.get("/purchases",auth,function(req,res){
+userRouter.get("/purchases",userMiddleware, async function(req,res){
 
 });
 
+/*
+this is also an auth function that can be used in place of userMiddleware.
 function auth(req,res,next){
     const token = req.headers.token;
 
@@ -93,6 +96,7 @@ function auth(req,res,next){
         });
     }
 }
+    */
 
 module.exports = {
     userRouter : userRouter
