@@ -10,7 +10,7 @@ const { Router } = require('express');//here we just get the Router by destructu
 const userRouter = Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { userModel } = require('../db');
+const { userModel, purchaseModel, courseModel } = require('../db');
 const {user_secret} = require('../config');
 const { userMiddleware } = require('../middleware/user');
 
@@ -77,7 +77,21 @@ userRouter.post("/signin",async function(req,res){
 });
 
 userRouter.get("/purchases",userMiddleware, async function(req,res){
+    const userId = req.userId;
 
+    const purchases = await purchaseModel.find({
+        userId,
+    });
+
+    //this creates an array of courseId and then checks if there "_id" is present in the pruchases.courseId.
+    const courseData = await courseModel.find({
+        _id: { $in : purchases.map(x => x.courseId)}
+    });
+
+    res.json({
+        purchases,
+        courseData
+    });
 });
 
 /*

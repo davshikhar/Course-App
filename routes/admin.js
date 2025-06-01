@@ -18,6 +18,9 @@ adminRouter.post("/signup",async function(req,res){
         firstName:firstName,
         lastName:lastName
     });
+    res.json({
+        message:"admin is created successfully"
+    })
 });
 
 /*can also use the cookie based or session based authentication here*/

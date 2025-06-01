@@ -1,6 +1,7 @@
 //we have written all the course routes in this js file
 const { Router } = require('express');
 const { courseModel } = require('../db');
+const { purchaseModel } = require('../db');
 
 const courseRouter = Router();
 const { userMiddleware } = require('../middleware/user');
